@@ -9,21 +9,27 @@ int main(int argc, char **argv){
   
   Stack s;
 
-
- 
   for(i=1;i<argc;i++){
    
      for(j=0;j<strlen(argv[i]);j++){
-       /* Use stack to help with the parentheses*/
+      if (argv[i] == '{' || argv[i] == '(' || argv[i] == '[')
+            push(&s, argv[i]);
+      if (argv[i] == '}' || argv[i] == ')'
+            || argv[i] == ']') {
 
-
+            if (pop(&s) == '(' && argv[i] == ')')
+                N = 1;
+            else if (pop(&s) == '{' && argv[i] == '}')
+                N = 1;
+            else if (pop(&s) == '[' && argv[i] == ']')
+                N = 1;
+      }
      }
-
-
   }
+  if (s == NULL)
+        printf("Balanced \n");
+    else
+        printf("Not Balanced \n");
+    return 0;
 
-
-
-
-   return 0;
 }
