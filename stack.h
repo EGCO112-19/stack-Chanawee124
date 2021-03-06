@@ -1,97 +1,52 @@
-#define bool int
 
+#ifndef stack_h
+#define stack_h
+#include "node.h"
 
-struct sNode {
-    char data;
-    struct sNode* next;
-};
+typedef struct {
+	NodePtr top;
+	int size;
+}Stack;
 
-void push(struct sNode** top_ref, int new_data);
-int pop(struct sNode** top_ref);
-void pop_all(struct sNode* top_ref);
-struct sNode* ll = NULL;
-bool isMatchingPair(char character1, char character2)
+typedef Stack* StackPtr;
+
+void push(StackPtr s, char value)
 {
-    if (character1 == '(' && character2 == ')')
-        return 1;
-    else if (character1 == '{' && character2 == '}')
-        return 1;
-    else if (character1 == '[' && character2 == ']')
-        return 1;
-    else
-        return 0;
+
+  NodePtr new_node = (NodePtr)malloc(sizeof(Node));
+  new_node->data = value;
+  new_node->nextPtr = NULL;
+  
+  new_node->nextPtr = s->top;
+  s->top = new_node;
+  s->size++;
+
+  
 }
 
-bool areBracketsBalanced(char exp[])
+char pop(StackPtr s)
 {
-    int i = 0;
-    struct sNode* stack = NULL;
-    while (exp[i])
-    {
-        if (exp[i] == '{' || exp[i] == '(' || exp[i] == '[')
-            push(&stack, exp[i]);
-        if (exp[i] == '}' || exp[i] == ')'
-            || exp[i] == ']') {
-            if (stack == NULL)
-                return 0;
-            else if (!isMatchingPair(pop(&stack), exp[i]))
-                return 0;
-        }
-        i++;
-    }
-    ll = stack;
-    if (stack == NULL)
-        return 1;
-    else
-        return 0;
-}
-void push(struct sNode** top_ref, int new_data)
-{
-    struct sNode* new_node
-        = (struct sNode*)malloc(sizeof(struct sNode));
 
-    if (new_node == NULL) {
-        printf("Stack overflow n");
-        getchar();
-        exit(0);
-    }
-
-    new_node->data = new_data;
-    new_node->next = (*top_ref);
-    (*top_ref) = new_node;
-}
-
-int pop(struct sNode** top_ref)
-{
-    char res;
-    struct sNode* top;
-    if (*top_ref == NULL) {
-        printf("Stack overflow n");
-        getchar();
-        exit(0);
-    }
-    else {
-        top = *top_ref;
-        res = top->data;
-        *top_ref = top->next;
-        free(top);
-        return res;
-    }
-}
-void pop_all(struct sNode* top_ref){
   char res;
-  struct sNode* top;
-  struct sNode* temp;
-  top = top_ref;
-  while(top != NULL){
-    
-    if (top->data == '{' || top->data == '(' || top->data == '[' || top->data == '}' || top->data == ')'|| top->data == ']')
-    {
-    res = top->data;
-    temp = top;
-    top = top->next;
+    NodePtr temp;
+
+    temp = s->top;
+    s->top = s->top->nextPtr;
+    res = temp->data;
+
     free(temp);
-    printf("poping %c\n",res);
-    }
-  }
+    temp = NULL;
+    s->size--;
+    return res;
 }
+void pop_all(StackPtr s){
+  NodePtr ptr = NULL;
+  ptr = s->top;
+  while(ptr != NULL){
+    s->top = s->top->nextPtr;
+    free(ptr);
+    ptr = s->top;
+    s->size--;
+ }
+}
+#endif
